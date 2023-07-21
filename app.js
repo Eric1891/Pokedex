@@ -23,8 +23,26 @@ app.get("/", (req, res) => {
 app.get("/pokemon/:id", (req, res) => {
   const id = req.params.id;
   const post = pokeBank.find(id);
-  res.send(`<!DOCTYPE html>
-
+  if (!pokeBank.find(id)) {
+    res.status(404);
+    const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>My Pokedex</title>
+      <link rel="stylesheet" href="/style.css" />
+    </head>
+    <body>
+      <header><img src="/logo.png"/>Pokedex</header>
+      <div class="not-found">
+        <p>Pika pika... Page Not Found</p>
+        <img src="/pikachu-404.gif" />
+      </div>
+    </body>
+    </html>`;
+    res.send(html);
+  }
+  else {res.send(`<!DOCTYPE html>
 <html>
   <head>
     <title>My Pokedex</title>
@@ -53,7 +71,7 @@ app.get("/pokemon/:id", (req, res) => {
   </body>
 </html>
 `);
-});
+}});
 
 // Define the Pokemon details route
 app.get("/pokemon/:id", (req, res) => {
@@ -69,25 +87,7 @@ app.get("/pokemon/:id", (req, res) => {
   }
 });
 
-app.use((req, res, next) => {
-  res.status(404);
-  const html = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <title>My Pokedex</title>
-        <link rel="stylesheet" href="/style.css" />
-      </head>
-      <body>
-        <header><img src="/logo.png" />Pokedex</header>
-        <div class="not-found">
-          <p>Pika pika... Page Not Found</p>
-          <img src="/pikachu-404.gif" />
-        </div>
-      </body>
-    </html>`;
-  res.send(html);
-});
+
 
 const PORT = 3000;
 app.listen(PORT, () => {
